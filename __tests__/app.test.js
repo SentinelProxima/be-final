@@ -15,4 +15,12 @@ describe('GET /api/categories', () => {
             expect(Array.isArray(res.body)).toBe(true);
         });
     });
+    it('returns an array of categories with slug and description properties', () => {
+        return request(app).get('/api/categories')
+        .expect(200)
+        .then((res) => {
+            expect(res.body[0].hasOwnProperty("slug")).toBe(true);
+            expect(res.body[0].hasOwnProperty("description")).toBe(true);
+        });
+    });
 });
