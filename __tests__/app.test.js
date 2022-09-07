@@ -13,6 +13,7 @@ describe('GET /api/categories', () => {
         .expect(200)
         .then((res) => {
             expect(Array.isArray(res.body.categories)).toBe(true);
+            expect(res.body.categories.length).toBe(4);
         });
     });
     it('returns an array of categories with slug and description properties', () => {
