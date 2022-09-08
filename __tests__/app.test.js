@@ -80,9 +80,13 @@ describe('GET /api/users', () => {
         return request(app).get('/api/users')
         .expect(200)
         .then((res) => {
-            expect(res.body.users[0].username).toBe("mallionaire");
-            expect(res.body.users[1].name).toBe("philippa");
-            expect(res.body.users[2].hasOwnProperty("avatar_url")).toBe(true);
+            res.body.users.forEach(user => {
+                expect(user).toEqual(expect.objectContaining({
+                    name: expect.any(String),
+                    username: expect.any(String),
+                    avatar_url: expect.any(String)
+                }));
+            });
         });
     });
 });
