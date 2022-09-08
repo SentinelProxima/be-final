@@ -67,3 +67,27 @@ describe('GET /api/reviews/:review_id', () => {
         });
     });
 });
+
+describe('GET /api/users', () => {
+    it('returns a users array', () => {
+        return request(app).get('/api/users')
+        .expect(200)
+        .then((res) => {
+            expect(Array.isArray(res.body.users)).toBe(true);
+            expect(res.body.users.length).toBe(4);
+        });
+    });
+    it('returns an array of users with username, name and avatar_url properties', () => {
+        return request(app).get('/api/users')
+        .expect(200)
+        .then((res) => {
+            res.body.users.forEach(user => {
+                expect(user).toEqual(expect.objectContaining({
+                    name: expect.any(String),
+                    username: expect.any(String),
+                    avatar_url: expect.any(String)
+                }));
+            });
+        });
+    });
+});
