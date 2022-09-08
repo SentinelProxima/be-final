@@ -39,6 +39,7 @@ describe('GET /api/reviews/:review_id', () => {
         .expect(200)
         .then((res) => {
             const rev = res.body.review;
+            expect(rev.review_id).toBe(1);
             expect(rev.title).toBe("Agricola");
             expect(rev.category).toBe("euro game");
             expect(rev.designer).toBe("Uwe Rosenberg");
