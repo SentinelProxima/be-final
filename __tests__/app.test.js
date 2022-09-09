@@ -130,4 +130,20 @@ describe('PATCH /api/reviews/:review_id', () => {
             expect(msg.msg).toBe("Invalid review ID");
         });
     });
+    it('returns 400 if body has no inc_votes property', () => {
+        return request(app).patch('/api/reviews/1').send({})
+        .expect(400)
+        .then((res) => {
+            const msg = JSON.parse(res.text);
+            expect(msg.msg).toBe("Invalid request");
+        });
+    });
+    it('returns 400 if inc_votes is not an integer', () => {
+        return request(app).patch('/api/reviews/1').send({inc_votes: "a"})
+        .expect(400)
+        .then((res) => {
+            const msg = JSON.parse(res.text);
+            expect(msg.msg).toBe("Invalid request");
+        });
+    });
 });
