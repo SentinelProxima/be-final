@@ -91,3 +91,43 @@ describe('GET /api/users', () => {
         });
     });
 });
+
+describe('PATCH /api/reviews/:review_id', () => {
+    it('returns a review object', () => {
+        return request(app).patch('/api/reviews/1').send({inc_votes: 1})
+        .expect(200)
+        .then((res) => {
+            expect(typeof res.body.review).toBe("object");
+        });
+    });
+    it('returns a review with votes incremented by inc_votes', () => {
+        return request(app).patch('/api/reviews/1').send({inc_votes: 1})
+        .expect(200)
+        .then((res) => {
+            expect(res.body.review.votes).toBe(2);
+        });
+    });
+    it('decrements votes if inc_votes is negative', () => {
+        return request(app).patch('/api/reviews/2').send({inc_votes: -2})
+        .expect(200)
+        .then((res) => {
+            expect(res.body.review.votes).toBe(3);
+        });
+    });
+    it('returns 404 if invalid (numeric) ID passed', () => {
+        return request(app).patch('/api/reviews/0').send({inc_votes: 1})
+        .expect(404)
+        .then((res) => {
+            const msg = JSON.parse(res.text);
+            expect(msg.msg).toBe("No such review");
+        });
+    });
+    it('returns 400 if non-numeric ID passed', () => {
+        return request(app).patch('/api/reviews/kitten').send({inc_votes: 1})
+        .expect(400)
+        .then((res) => {
+            const msg = JSON.parse(res.text);
+            expect(msg.msg).toBe("Invalid review ID");
+        });
+    });
+});
