@@ -9,3 +9,13 @@ exports.selectReview = (id_param) => {
         else return Promise.reject({status: 404, msg: "No such review"});
     });
 };
+
+exports.updateReviewVotes = (review, inc) => {
+    if (isNaN(parseInt(inc))) {
+        return Promise.reject({status: 400, msg: "Invalid request"});
+    }
+    return db.query(`UPDATE reviews
+    SET votes = $1
+    WHERE review_id = $2
+    RETURNING *`, [review.votes + inc, review.review_id]);
+};
