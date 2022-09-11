@@ -66,6 +66,20 @@ describe('GET /api/reviews/:review_id', () => {
             expect(msg.msg).toBe("Invalid review ID");
         });
     });
+    it('returns review object with a comment_count property', () => {
+        return request(app).get('/api/reviews/1')
+        .expect(200)
+        .then((res) => {
+            expect(res.body.review.comment_count).toBe(0);
+        });
+    });
+    it('comment_count counts the comments matching the review_id', () => {
+        return request(app).get('/api/reviews/2')
+        .expect(200)
+        .then((res) => {
+            expect(res.body.review.comment_count).toBe(3);
+        });
+    });
 });
 
 describe('GET /api/users', () => {

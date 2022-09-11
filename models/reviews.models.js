@@ -10,6 +10,15 @@ exports.selectReview = (id_param) => {
     });
 };
 
+exports.countComments = (id_param) => {
+    const { review_id } = id_param;
+    return db.query(`SELECT * FROM comments
+    WHERE review_id = $1`, [review_id])
+    .then(({rows}) => {
+        return rows.length;
+    });
+};
+
 exports.updateReviewVotes = (review, inc) => {
     if (isNaN(parseInt(inc))) {
         return Promise.reject({status: 400, msg: "Invalid request"});
