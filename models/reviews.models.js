@@ -19,6 +19,13 @@ exports.countComments = (id_param) => {
     });
 };
 
+exports.countReviews = () => {
+    return db.query(`SELECT * FROM reviews`)
+    .then(({rows}) => {
+        return rows.length;
+    });
+};
+
 exports.updateReviewVotes = (review, inc) => {
     if (isNaN(parseInt(inc))) {
         return Promise.reject({status: 400, msg: "Invalid request"});

@@ -1,4 +1,4 @@
-const { selectReview, countComments, updateReviewVotes } = require('../models/reviews.models');
+const { selectReview, countComments, countReviews, updateReviewVotes } = require('../models/reviews.models');
 
 exports.getSingleReview = (req, res, next) => {
     const review_id = req.params;
@@ -13,6 +13,25 @@ exports.getSingleReview = (req, res, next) => {
         res.status(200).send({ review });
     })
     .catch(next);
+};
+
+exports.getReviews = (req, res, next) => {
+    countReviews()
+    .then((num) => {
+        const promiseArray = [];
+        for (let i = 1; i <= num; i++) {
+            promiseArray.push(selectReview({review_id: i}));
+        }
+        return promiseArray;
+    })
+    .then((promiseArray) => {
+        Promise.all(promiseArray).then((output) => {
+            const sortedOutput = output.sort((a, b) => {
+                return b.created_at - a.created_at;
+            })
+            res.status(200).send({ reviews: sortedOutput });
+        });
+    });
 };
 
 exports.patchReview = (req, res, next) => {

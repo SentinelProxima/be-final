@@ -73,7 +73,7 @@ describe('GET /api/reviews/:review_id', () => {
             expect(res.body.review.comment_count).toBe(0);
         });
     });
-    it('comment_count counts the comments matching the review_id', () => {
+    it('counts the comments matching the review_id', () => {
         return request(app).get('/api/reviews/2')
         .expect(200)
         .then((res) => {
@@ -158,6 +158,49 @@ describe('PATCH /api/reviews/:review_id', () => {
         .then((res) => {
             const msg = JSON.parse(res.text);
             expect(msg.msg).toBe("Invalid request");
+        });
+    });
+});
+
+describe('GET /api/reviews', () => {
+    it('returns an array', () => {
+        return request(app).get('/api/reviews')
+        .expect(200)
+        .then((res) => {
+            expect(Array.isArray(res.body.reviews)).toBe(true);
+        });
+    });
+    it('returns an array of review objects', () => {
+        return request(app).get('/api/reviews')
+        .expect(200)
+        .then((res) => {
+            res.body.reviews.forEach(rev => {
+                expect(rev).toEqual(expect.objectContaining({
+                    review_id: expect.any(Number),
+                    title: expect.any(String),
+                    category: expect.any(String),
+                    designer: expect.any(String),
+                    owner: expect.any(String),
+                    review_body: expect.any(String),
+                    review_img_url: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number)
+                }));
+            });
+        });
+    });
+    it('returns reviews sorted in descending order by date', () => {
+        return request(app).get('/api/reviews')
+        .expect(200)
+        .then((res) => {
+            expect(res.body.reviews[0].review_id).toBe(7);
+        });
+    });
+    it('returns reviews including comment_count', () => {
+        return request(app).get('/api/reviews')
+        .expect(200)
+        .then((res) => {
+            expect(res.body.reviews[0].comment_count).toBe(0);
         });
     });
 });
